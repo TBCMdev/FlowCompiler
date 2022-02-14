@@ -18,7 +18,7 @@ namespace flow
     class fileManager
     {
     public:
-        static string readFileIntoString(string path)
+        inline static string readFileIntoString(string path)
         {
             try
             {
@@ -36,6 +36,19 @@ namespace flow
             {
                 cout << "an unexpected error has occured while trying to open the program." << endl;
                 return "";
+            }
+        }
+        inline static bool writeToFile(string path, string cont,string placeholder = ""){
+            try{
+                ofstream s(path);
+
+                s << placeholder + cont;
+
+                s.close();
+
+                return true;
+            }catch(exception e){
+                return false;
             }
         }
     };
