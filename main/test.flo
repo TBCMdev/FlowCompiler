@@ -1,14 +1,13 @@
 
-string myString = val
-number myNumber = val
+string myString = ""
+number myNumber = 1.4
 
 
-method myMethod (string myvar,number myvar2,number myvar3):
-    myvar2 = myvar2 * myvar3
-    write(mvar + myvar2)
-    string new = "new me!"
-    
+method myMethod (string myvar,number myvar2,number myvar3){
+    string myStr = "new me!"
+    write(myString + myString)
     finish myvar2
+}
     
     
 

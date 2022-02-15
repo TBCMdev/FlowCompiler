@@ -28,7 +28,7 @@ public:
 
         if (!generator.process(fc))
         {
-            std::cout << "Failed to lex: " << fc << std::endl;
+            cout << "Failed to lex: " << fc << endl;
         }
 
         if (debug) lexertk::helper::dump(generator);

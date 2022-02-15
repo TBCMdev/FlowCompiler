@@ -570,7 +570,7 @@ namespace lexertk
          skip_whitespace();
 
          skip_comments();
-
+         //cout << *s_itr_ << endl;
          if (is_end(s_itr_))
          {
             return;
@@ -590,7 +590,7 @@ namespace lexertk
             scan_number();
             return;
          }
-         else if ('\'' == (*s_itr_))
+         else if ('\'' == (*s_itr_) || '\"' == (*s_itr_) )// FROM '\'' == (*s_itr_)  TO '\'' == (*s_itr_) || '\"' == (*s_itr_)
          {
             scan_string();
             return;
@@ -600,6 +600,7 @@ namespace lexertk
             token_t t;
             t.set_error(token::e_error,s_itr_,s_itr_ + 2,base_itr_);
             token_list_.push_back(t);
+            cout << "errstr:" + t.value << endl;
             ++s_itr_;
          }
       }
@@ -774,8 +775,8 @@ namespace lexertk
 
       inline void scan_string()
       {
-         const char* begin = s_itr_ + 1;
 
+         const char* begin = s_itr_ + 1;
          token_t t;
 
          if (std::distance(s_itr_,s_end_) < 2)
@@ -803,7 +804,7 @@ namespace lexertk
             }
             else if (!escaped)
             {
-               if ('\'' == *s_itr_)
+               if ('\'' == *s_itr_ || '\"' == *s_itr_)
                   break;
             }
             else if (escaped)
@@ -821,14 +822,14 @@ namespace lexertk
          }
 
          if (!escaped_found)
-            t.set_string(begin,s_itr_,base_itr_);
+            t.set_string(begin - 1,s_itr_ + 1,base_itr_); //FROM begin,s_itr_,base_itr_ TO begin - 1,s_itr_ + 1,base_itr_ (strings are parsed in this without " or ', so it will now -1 and +1 the offset to get those included.)
          else
          {
             std::string parsed_string(begin,s_itr_);
             details::cleanup_escapes(parsed_string);
             t.set_string(parsed_string, std::distance(base_itr_,begin));
          }
-
+         cout << "parsed:" + t.value << endl;
          token_list_.push_back(t);
          ++s_itr_;
 

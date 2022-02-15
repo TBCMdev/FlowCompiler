@@ -1,0 +1,1 @@
+THIS FOLDER IS PLACED IN YOUR C:\flow\bin folder FOR TESTING

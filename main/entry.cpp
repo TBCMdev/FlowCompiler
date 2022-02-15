@@ -13,40 +13,41 @@ static std::map<string, string> language = {
     {"string", "\\w+"}
 
 };
+static std::set<string> nonliners = {"{","}"};
 static std::map<string, string> flowtocpp = {
-    {"auto", "method"},
-    {"int", "number"},
-    {"decimal", "number"},
-    {"float", "number"},
-    {"long", "number"},
-    {"short", "number"},
-    {"\n", ";\n"},
-    {"finish","return"}
-};
-static std::map<string,string> flowkeyneedsLib = {
-    {"string","#include <string>\n"}
-};
+    {"method", "auto"},
+    {"number", "float"},
+    {"finish", "return"}};
+static std::set<string> FLOWCPPDEPENDENCIES = fileManager::readflowcppdep();
+static std::map<string, string> flowkeyneedsLib = {
+    {"string", "#include <string>\n"}};
 string compileToCPP(lexertk::generator gen)
 {
     std::set<string> usedincludes_usings;
     string includes_usings;
+    for(auto x : FLOWCPPDEPENDENCIES){
+        includes_usings.append("#include \"" + x + "\"\n");
+    }
 
-    string ret = placeholder + "using namespace std;";
+    string ret = placeholder + "using namespace std;\n\n";
     for (std::size_t i = 0; i < gen.size(); ++i)
     {
         lexertk::token t = gen[i];
-        if (flowkeyneedsLib.find(t.value) != flowtocpp.end() && usedincludes_usings.find(t.value) == usedincludes_usings.end()){
-            //we need an include
+        if (flowkeyneedsLib.find(t.value) != flowkeyneedsLib.end() && usedincludes_usings.find(t.value) == usedincludes_usings.end())
+        {
+            // we need an include
             includes_usings.append(flowkeyneedsLib.find(t.value)->second + " ");
             usedincludes_usings.insert(t.value);
         }
-        if(flowtocpp.find(t.value) != flowtocpp.end()){
-            //we have a predefined static token (see above)
+        if (flowtocpp.find(t.value) != flowtocpp.end())
+        {
+            // we have a predefined static token (see above)
             ret.append(flowtocpp.find(t.value)->second + " ");
-        }else{
+        }
+        else
+        {
             ret.append(t.value + " ");
         }
-        
     }
     includes_usings += "\n\n\n" + ret;
     return includes_usings;
@@ -56,14 +57,14 @@ bool compile(string fc, bool runCompileAfter = false)
     try
     {
         lexertk::generator result = Tokenizer::compile(fc);
-        cout << "result:" << endl;
+        // cout << "result:" << endl;
         if (result.size() <= 0)
         {
             // if no tokens were found.
             cout << "file was empty?";
             exit(1);
         }
-        fileManager::writeToFile("./output.cpp",compileToCPP(result));
+        fileManager::writeToFile("./output.cpp", compileToCPP(result));
 
         return true;
     }
@@ -72,6 +73,7 @@ bool compile(string fc, bool runCompileAfter = false)
         return false;
     }
 }
+
 int main()
 {
 
@@ -82,7 +84,9 @@ int main()
             path = "./test.flo";
         if (debug)
             cout << "opening \"" + path + "\" ..." << endl;
-        string cont = fileManager::readFileIntoString(path);
+        
+
+        string cont = fileManager::readFileIntoString(path, nonliners);
         if (cont.empty())
         {
             cout << "File does not exist.";
