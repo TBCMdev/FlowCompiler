@@ -3,10 +3,17 @@
 #include "tokenizer.cpp"
 using namespace std;
 using namespace flow;
+
+
+
 bool cmd = true;
 bool debug = true;
 bool instantCompile = true;
 bool format = true; // turn false for file content to be less
+
+
+
+
 static const string placeholder = "/**************************************************\nCOPYRIGHT (2022) OF FLOW INC.\n**************************************************/\n\n\n";
 static std::map<string, string> language = {
     {"string", "\\w+"}

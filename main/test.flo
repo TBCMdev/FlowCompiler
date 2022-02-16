@@ -4,13 +4,14 @@ number myNumber = 1.4
 
 
 start(){
-    myMethod("myvar",5,3)
+    myMethod()
 }
 
-method myMethod (string myvar,number myvar2,number myvar3){
-    string myStr = "new me!"
-    write(myvar2 + myvar3)
-    finish myvar2
+method myMethod (){
+    string response = question("what is your favorite color?")
+    if (response == "green"){
+        write(response + " is my favorite color too!")
+    }
 }
     
     

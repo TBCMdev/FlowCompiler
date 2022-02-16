@@ -10,6 +10,6 @@ COPYRIGHT (2022) OF FLOW INC.
 
 using namespace std;
 
-string myString = "" ; float myNumber = 1.4 ; auto myMethod ( string myvar , float myvar2 , float myvar3 ) { ; string myStr = "new me!" ; write ( myvar2 + myvar3 ) ; return myvar2 ; } 
+string myString = "" ; float myNumber = 1.4 ; auto myMethod ( ) { ; string response = question ( "what is your favorite color?" ) ; if ( response == "green" ) { ; write ( response + " is my favorite color too!" ) ; } } 
 
-int main ( ) { ; myMethod ( "myvar" , 5 , 3 ) ; } 
+int main ( ) { ; myMethod ( ) ; } 
