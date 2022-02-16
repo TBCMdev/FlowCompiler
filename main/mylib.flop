@@ -1,0 +1,8 @@
+method writehello(){
+    write("hello!")
+}
+
+
+
+
+

@@ -7,7 +7,6 @@
 #include <regex>
 #include <map>
 #include "../dependencies/lexertk-master/lexertk.hpp"
-
 /*
 --READ--
 using a handy library found at: https://github.com/ArashPartow/lexertk
@@ -17,7 +16,6 @@ please check it out! ill be using this for the lexical indexing.
 
 using namespace std;
 using namespace flow;
-
 class Tokenizer
 {
 

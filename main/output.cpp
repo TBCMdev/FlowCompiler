@@ -1,6 +1,6 @@
 #include "C:\Flow\bin\console.cpp"
-#include <string>
- 
+#include "C:\Flow\bin\file.cpp"
+
 
 
 /**************************************************
@@ -10,6 +10,6 @@ COPYRIGHT (2022) OF FLOW INC.
 
 using namespace std;
 
-string myString = "" ; float myNumber = 1.4 ; auto myMethod ( ) { ; string response = question ( "what is your favorite color?" ) ; if ( response == "green" ) { ; write ( response + " is my favorite color too!" ) ; } } 
+auto smilyFace ( ) { ; return ":)" ; } auto sadFace ( ) { ; return ":(" ; } 
 
-int main ( ) { ; myMethod ( ) ; } 
+int main ( ) { ; write ( smilyFace ( ) ) ; } 

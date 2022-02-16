@@ -1,17 +1,16 @@
 
-string myString = ""
-number myNumber = 1.4
+
 
 
 start(){
-    myMethod()
+    write(smilyFace())
 }
 
-method myMethod (){
-    string response = question("what is your favorite color?")
-    if (response == "green"){
-        write(response + " is my favorite color too!")
-    }
+method smilyFace(){
+    finish ":)"
+}
+method sadFace(){
+    finish ":("
 }
     
     
