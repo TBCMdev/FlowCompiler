@@ -3,9 +3,13 @@ string myString = ""
 number myNumber = 1.4
 
 
+start(){
+    myMethod("myvar",5,3)
+}
+
 method myMethod (string myvar,number myvar2,number myvar3){
     string myStr = "new me!"
-    write(myString + myString)
+    write(myvar2 + myvar3)
     finish myvar2
 }
     

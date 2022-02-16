@@ -78,7 +78,8 @@
         "unordered_set": "cpp",
         "variant": "cpp",
         "xhash": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "codecvt": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

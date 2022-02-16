@@ -5,6 +5,9 @@
 #include <sstream>
 #include <string>
 #include <set>
+#include <experimental/filesystem>
+
+
 #ifndef __has_include
   static_assert(false, "__has_include not supported");
 #else
@@ -13,12 +16,14 @@
      namespace fs = std::filesystem;
 #  elif __has_include(<experimental/filesystem>)
 #    include <experimental/filesystem>
-     namespace fs = std::experimental::filesystem;
+     namespace fs = std::experimental::filesystem::v1;
 #  elif __has_include(<boost/filesystem.hpp>)
 #    include <boost/filesystem.hpp>
      namespace fs = boost::filesystem;
 #  endif
 #endif
+
+
 using namespace std;
 
 
@@ -39,7 +44,7 @@ namespace flow
         inline static std::set<string> readflowcppdep(){
             std::set<string> res;
             for (const auto & file : fs::directory_iterator("C:\\Flow\\bin\\")){
-                res.insert(file.path().filename().string());
+                res.insert("C:\\Flow\\bin\\" + file.path().filename().string());
             }
 
             return res;
