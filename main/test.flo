@@ -1,18 +1,14 @@
-
-
-
-
 start(){
-    write(smilyFace())
+    thing myArray = {3,2,4,5}
+
+    loop(thing num in myArray){
+        write("test:",num)
+    }
+   
+
 }
 
-method smilyFace(){
-    finish ":)"
-}
-method sadFace(){
-    finish ":("
-}
-    
+
     
 
 

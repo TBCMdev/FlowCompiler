@@ -16,6 +16,7 @@ static string readFile(string path)
             buffer << t.rdbuf();
             return buffer.str();
         }
+        return "";
     }
     catch(exception e)
     {

@@ -7,30 +7,27 @@
 #include <set>
 #include <experimental/filesystem>
 
-
 #ifndef __has_include
-  static_assert(false, "__has_include not supported");
+static_assert(false, "__has_include not supported");
 #else
-#  if __cplusplus >= 201703L && __has_include(<filesystem>)
-#    include <filesystem>
-     namespace fs = std::filesystem;
-#  elif __has_include(<experimental/filesystem>)
-#    include <experimental/filesystem>
-     namespace fs = std::experimental::filesystem::v1;
-#  elif __has_include(<boost/filesystem.hpp>)
-#    include <boost/filesystem.hpp>
-     namespace fs = boost::filesystem;
-#  endif
+#if __cplusplus >= 201703L && __has_include(<filesystem>)
+#include <filesystem>
+namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem::v1;
+#elif __has_include(<boost/filesystem.hpp>)
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
 #endif
-
+#endif
 
 using namespace std;
 
-
-//USED TO STOP FILESYSTEM NAMESPACE ERROR
+// USED TO STOP FILESYSTEM NAMESPACE ERROR
 namespace flow
 {
-    
+
     string getUserIN(string s = "")
     {
         cout << s;
@@ -41,10 +38,22 @@ namespace flow
     class fileManager
     {
     public:
-        inline static std::set<string> readflowcppdep(){
+        inline static std::set<string> readflowcppdep(bool tester = false)
+        {
             std::set<string> res;
-            for (const auto & file : fs::directory_iterator("C:\\Flow\\bin\\")){
-                res.insert("C:\\Flow\\bin\\" + file.path().filename().string());
+            if (tester)
+            {
+                for (const auto &file : fs::directory_iterator("..\\dependencies\\flowCPPinbuilt\\"))
+                {
+                    res.insert("..\\dependencies\\flowCPPinbuilt\\" + file.path().filename().string());
+                }
+            }
+            else
+            {
+                for (const auto &file : fs::directory_iterator("C:\\Flow\\bin\\"))
+                {
+                    res.insert("C:\\Flow\\bin\\" + file.path().filename().string());
+                }
             }
 
             return res;
@@ -88,6 +97,7 @@ namespace flow
                 return "";
             }
         }
+
         inline static string endliner(string prev, std::set<string> s)
         {
             istringstream f(prev);
@@ -100,20 +110,40 @@ namespace flow
                 bool needs = false;
                 for (auto a : s)
                 {
-                    if (!has_suffix(line,a) && !line.empty() && line.find_first_not_of(' ') != std::string::npos)//no endliner exception, line isnt empty, and it is not fully whitespaces.
+                    cout << a << "has?:" << has_suffix(line, a) << endl;
+                    if (!has_suffix(line, a) && !line.empty() && (line.find_first_not_of(' ') != std::string::npos))
+                    { // no endliner exception, line isnt empty, and it is not fully whitespaces.
                         needs = true;
+                    }
                     else
+                    {
                         needs = false;
+                        break;
+                    }
                 }
                 cout << needs << endl;
-                if (needs){
+                if (needs)
+                {
                     cout << "appending" + (line + ";") << endl;
                     finished.append(line + ";");
-                }else{
+                }
+                else
+                {
                     finished.append(line);
                 }
             }
             return finished;
+        }
+        static void str_trim(string &s)
+        {
+            cout << "trimming: '" << s << "'" << endl;
+            s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch)
+                                            { return !std::isspace(ch); }));
+            s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch)
+                                 { return !std::isspace(ch); })
+                        .base(),
+                    s.end());
+            cout << "trimmed: '" << s << "'" << endl;
         }
         inline static bool writeToFile(string path, string cont, string placeholder = "")
         {

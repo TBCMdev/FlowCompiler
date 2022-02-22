@@ -79,7 +79,8 @@
         "variant": "cpp",
         "xhash": "cpp",
         "filesystem": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "*.rh": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }
