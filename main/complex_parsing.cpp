@@ -1,6 +1,5 @@
 #include <iostream>
 #include "tokenizer.cpp"
-
 using namespace std;
 bool is_number(const std::string &s)
 {
@@ -12,7 +11,8 @@ static bool is_op(const string &s)
 {
     return !s.empty() && (s == "<" || s == ">" || s == "<=" || s == ">=" || s == "!=" || s == "==");
 }
-static bool is_bool(const string &s){
+static bool is_bool(const string &s)
+{
     return !s.empty() && (s == "true" || s == "false");
 }
 static tuple<string, int, int> parseLoop(std::map<string, string> flowtocpp, lexertk::generator gen, int i)
@@ -160,7 +160,9 @@ static tuple<string, int, int> parseLoop(std::map<string, string> flowtocpp, lex
             cout << f1 << "is number" << endl;
             conv = "int ___ = 0; ___ < " + f1 + "; ___++ "; // add traditional for loop with untracable int name
             c = 2;
-        }else if (is_bool(f1)){
+        }
+        else if (is_bool(f1))
+        {
             cout << f1 << "is bool" << endl;
             conv = ";;";
             c = 2;
@@ -173,29 +175,84 @@ static tuple<string, int, int> parseLoop(std::map<string, string> flowtocpp, lex
     return res;
 }
 
-
-
-static string _checkType(lexertk::generator gen, int i){
+static string _checkType(lexertk::generator gen, int i)
+{
     lexertk::token orig = gen[i];
-    //gen[i + 1].val == token name
-    //gen[i + 2].val == "="
-    //gen[i + 3].val == start of VALUE
-    try{
+    // gen[i + 1].val == token name
+    // gen[i + 2].val == "="
+    // gen[i + 3].val == start of VALUE
+    try
+    {
         lexertk::token val = gen[i + 3];
         cout << "val:" << val.value << endl;
-        if (val.value == "{"){
-            //treat like std::vector<type> and get type
-            for(int x = i + 3; x < gen.size(); x++){
-                if (gen[x].value == "\"" || gen[x].value == "'"){
+        if (val.value == "{")
+        {
+            // treat like std::vector<type> and get type
+            for (int x = i + 3; x < gen.size(); x++)
+            {
+                if (gen[x].value == "\"" || gen[x].value == "'")
+                {
                     // we know its a string array, which is the only occurance in my testing that causes an error with vectors and arrays.
                     return "std::vector<string>";
                 }
             }
         }
-        //ADD MORE DEFINABLE TYPES IF NEED BE (if auto keyword does not cover.)
-        //then add the keyword and this func to entry.cpp::typeCheckers
+        // ADD MORE DEFINABLE TYPES IF NEED BE (if auto keyword does not cover.)
+        // then add the keyword and this func to entry.cpp::typeCheckers
         return "auto";
-    }catch(exception ignore){
+    }
+    catch (exception ignore)
+    {
         return orig.value;
+    }
+}
+static void CompileIncludedFile(string &path)
+{
+    try
+    {
+        fs::path p(path);
+        if (!fs::is_directory("./includes"))
+        {
+            fs::create_directory("./includes");
+        }
+        p.replace_extension(".cpp");
+        compile(fileManager::readFileIntoString(path, nonliners), "./includes/" + p.filename().string(), false);
+    }
+    catch (exception e)
+    {
+    }
+}
+static std::tuple<string, int> parseExtraStatement(lexertk::generator gen, int i)
+{
+    lexertk::token orig = gen[i];
+
+    /*
+        SYNTAX: extra "[file name]"
+        gen[i] = "extra"
+        gen[i + 1] = VAL
+
+    */
+    try
+    {
+
+        if (i + 1 > gen.size())
+            return tuple<string, int>(orig.value, 0);
+        lexertk::token val = gen[i + 1];
+        if (val.value.front() == '"')
+        {
+            val.value.erase(0, 1);         // erase the first character
+            val.value.erase(val.value.size() - 1); // erase the last character
+        }
+        cout << "finished:" << val.value << endl;
+        CompileIncludedFile(val.value);
+        fs::path p(val.value);
+        p.replace_extension(".cpp");
+        
+        return tuple<string, int>("#include \"./includes/" + p.filename().string() + "\"", 1);
+    }
+    catch (exception ignored)
+    {
+        cout << "exception:" << ignored.what() << endl;
+        return tuple<string, int>(orig.value, 0);
     }
 }

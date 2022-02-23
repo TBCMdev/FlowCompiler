@@ -1,0 +1,12 @@
+extra "./mylib.flo"
+
+
+start(){
+    string q = question("are you happy or sad currently?")
+
+    if(q == "happy"){
+        writeSmilyFace()
+    }else{
+        writeSadFace()
+    }
+}

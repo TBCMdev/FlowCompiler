@@ -27,7 +27,8 @@ using namespace std;
 // USED TO STOP FILESYSTEM NAMESPACE ERROR
 namespace flow
 {
-
+    static std::set<string> nonliners =  {"{" /*"}" REMOVED BECAUSE OF ARRAY IMPLEMENTATION*/};;
+    bool compile(string fc, string output, bool runCompileAfter);
     string getUserIN(string s = "")
     {
         cout << s;
@@ -106,7 +107,7 @@ namespace flow
             while (getline(f, line))
             {
                 cout << "line:" + line << endl;
-
+                
                 bool needs = false;
                 for (auto a : s)
                 {

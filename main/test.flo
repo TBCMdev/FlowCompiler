@@ -1,12 +1,33 @@
-start(){
-    thing myArray = {3,2,4,5}
+method quitmethod(){
+    string q = question("quit?")
 
-    loop(thing num in myArray){
-        write("test:",num)
+    if(q == "y") {
+        exit(0)
+    }else{
+        finish quit()
     }
-   
-
 }
+
+
+
+start(){
+    thing myArr = {1,2,3,4,5,6,7,8,9}
+
+
+    loop(thing n in myArr){
+        write("number:",n,"\n")
+    }
+
+    string q = question("out of those, what is your fav number?: ")
+
+
+    write("your favorite number is:",q)
+
+    quitmethod()
+}
+
+
+
 
 
     

@@ -13,11 +13,13 @@ bool instantCompile = true;
 bool format = true; // turn false for file content to be less
 
 static const string placeholder = "/**************************************************\nCOPYRIGHT (2022) OF FLOW INC.\n**************************************************/\n\n\n";
-static std::set<string> nonliners = {"{" /*"}" REMOVED BECAUSE OF ARRAY IMPLEMENTATION*/};
 
 static std::map<string, std::function<string(lexertk::generator, int)>> typeCheckers = {
     {"thing", _checkType},
     {"var", _checkType},
+};
+static std::map<string, std::function<std::tuple<string, int>(lexertk::generator, int)>> uniqueParsers = {
+    {"extra", parseExtraStatement},
 };
 static std::map<string, string> flowtocpp = {
     {"string", "std::string"},
@@ -38,13 +40,13 @@ static std::map<string, string> flowtocpp = {
     {"is", "=="},
     {"equals", "=="},
     {"in", ":"}};
-static std::set<string> FLOWCPPDEPENDENCIES = fileManager::readflowcppdep(true);
+static std::set<string> FLOWCPPDEPENDENCIES = fileManager::readflowcppdep(false);
 static std::map<string, string> flowkeyneedsLib = {
     //{"string", "#include <string>\n"}
 };
 
 string compileToCPP(lexertk::generator gen);
-bool compile(string fc, string output, bool runCompileAfter = false)
+bool flow::compile(string fc, string output, bool runCompileAfter = false)
 {
     try
     {
@@ -73,7 +75,6 @@ string compileToCPP(lexertk::generator gen)
     bool usemain = false;
     bool inmainloop = false;
     int SKIPC = 0;
-    bool parsingimport = false;
     std::set<string> usedincludes_usings;
     string includes_usings = "";
     string main = "";
@@ -124,31 +125,6 @@ string compileToCPP(lexertk::generator gen)
             continue;
         }
         // TODO ABOVE!!
-        if (parsingimport)
-        {
-
-            if (first == "from")
-            {
-                // erase from as it is a formality keyword and continue
-                continue;
-            }
-            else if (t.value.front() == '"')
-            {
-                // expected str:
-                t.value.append("\n");
-                // finally, parse the file
-                string filename = fileManager::ReplaceAll(t.value, "\"", "");
-                cout << "opening:" << filename << endl;
-                string cont = fileManager::readFileIntoString(filename, nonliners);
-                compile(cont, filename, false);
-                parsingimport = false;
-            }
-            else
-            {
-                continue;
-            }
-        }
-
         if (first == "start" ||
             first == "Start" ||
             first == "START")
@@ -156,10 +132,7 @@ string compileToCPP(lexertk::generator gen)
             inmainloop = true;
             usemain = true;
         }
-        if (first == "extra")
-        {
-            parsingimport = true;
-        }
+
         if (flowkeyneedsLib.find(t.value) != flowkeyneedsLib.end() && usedincludes_usings.find(t.value) == usedincludes_usings.end())
         {
             // we need an include
@@ -170,18 +143,28 @@ string compileToCPP(lexertk::generator gen)
         if (flowtocpp.find(t.value) != flowtocpp.end())
         {
             // we have a predefined static token (see above)
-            if (typeCheckers.find(t.value) == typeCheckers.end())
+            if (typeCheckers.find(t.value) != typeCheckers.end())
             {
+                if (!inmainloop)
+                    ret.append(typeCheckers.find(t.value)->second(gen, i) + " ");
+                else
+                    main.append(typeCheckers.find(t.value)->second(gen, i) + " ");
+            }
+            else if (uniqueParsers.find(t.value) != uniqueParsers.end())
+            {
+                std::tuple<string, int> t1 = uniqueParsers.find(t.value)->second(gen, i);
+                cout << "found:" << get<0>(t1) << endl
+                     << get<1>(t1) << endl;
+                if (!inmainloop)
+                    ret.append(get<0>(t1) + " ");
+                else
+                    main.append(get<0>(t1) + " ");
+                SKIPC += get<1>(t1);
+            }else{
                 if (!inmainloop)
                     ret.append(second + " ");
                 else
                     main.append(second + " ");
-            }else{
-                cout << "found type checker keyword!" << endl;
-                if (!inmainloop)
-                    ret.append(typeCheckers.find(t.value)->second(gen,i) + " ");
-                else
-                    main.append(typeCheckers.find(t.value)->second(gen,i) + " ");
             }
         }
         else
@@ -218,7 +201,7 @@ int main()
         if (debug)
             cout << "opening \"" + path + "\" ..." << endl;
 
-        string cont = fileManager::readFileIntoString(path, nonliners);
+        string cont = fileManager::readFileIntoString(path, flow::nonliners);
         if (cont.empty())
         {
             cout << "File does not exist.";

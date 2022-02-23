@@ -1,7 +1,7 @@
-#include "..\dependencies\flowCPPinbuilt\ERROR_SIMPLE.cpp"
-#include "..\dependencies\flowCPPinbuilt\console.cpp"
-#include "..\dependencies\flowCPPinbuilt\file.cpp"
-#include "..\dependencies\flowCPPinbuilt\inbuilt.cpp"
+#include "C:\Flow\bin\ERROR_SIMPLE.cpp"
+#include "C:\Flow\bin\console.cpp"
+#include "C:\Flow\bin\file.cpp"
+#include "C:\Flow\bin\inbuilt.cpp"
 
 
 
@@ -10,6 +10,6 @@ COPYRIGHT (2022) OF FLOW INC.
 **************************************************/
 
 
+#include "./includes/mylib.cpp" ;;
 
-
-int main (){auto myArray={3,2,4,5};for (auto num : myArray){write("test:",num);};};
+int main (){std::string q=question("are you happy or sad currently?");if(q=="happy"){writeSmilyFace();}else{writeSadFace();};}
