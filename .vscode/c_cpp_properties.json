@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/dependencies/**",
-                "C:/SFML-2.5.1/include"
+                "C:/Flow/SFML-2.5.1/include"
             ],
             "cppStandard": "c++20",
             "defines": [

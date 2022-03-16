@@ -10,6 +10,9 @@
 				"-g",
 				"${file}",
 				"-lstdc++fs",
+				"-static-libgcc",
+				"-static-libstdc++",
+				"-I \"C:\\Flow\\SFML-2.5.1\\include\"",
 				"-o",
 				"${fileDirname}\\${fileBasenameNoExtension}.exe"
 			],

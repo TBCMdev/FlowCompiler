@@ -831,7 +831,7 @@ namespace lexertk
             details::cleanup_escapes(parsed_string);
             t.set_string(parsed_string, std::distance(base_itr_,begin));
          }
-         cout << "parsed:" + t.value << endl;
+         if(flow::debug) cout << "parsed:" + t.value << endl;
          token_list_.push_back(t);
          ++s_itr_;
 

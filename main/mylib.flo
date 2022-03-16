@@ -1,9 +1,0 @@
-method writeSmilyFace(){
-    write(":)")
-}
-method writeSadFace(){
-    write(":(")
-}
-
-
-
